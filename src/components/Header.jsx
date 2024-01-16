@@ -9,10 +9,12 @@ export const Header = () => {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [showChart, setShowChart] = useState(false); 
+  const [showChart, setShowChart] = useState(false);
+  const [serverStarted, setServerStarted] = useState(false);
 
   useEffect(() => {
     fetchData();
+    checkServerStatus();  // Call function to check server status
   }, []);
 
   const fetchData = async () => {
@@ -26,6 +28,19 @@ export const Header = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+  };
+
+  const checkServerStatus = () => {
+    // Make a simple request to the server to check if it's running
+    fetch('http://localhost:5000/')
+      .then((response) => {
+        if (response.ok) {
+          setServerStarted(true);
+        }
+      })
+      .catch((error) => {
+        console.error('Error checking server status:', error);
+      });
   };
 
   const handleFilterChange = (filter) => {
@@ -57,7 +72,7 @@ export const Header = () => {
     <>
       <div className='header_section'>
         <div className='background_image'></div>
-        <h1 className='header_section_title'>Global Energy and Economic Trends </h1>
+        <h1 className='header_section_title'>{serverStarted ? 'Server started' : 'Server not started'}</h1>
         <input
           className='input_container'
           type='text'
